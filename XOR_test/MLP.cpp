@@ -205,3 +205,71 @@ void CMLP::BackPopagationLearning()
 		}
 	}
 }
+
+
+bool CMLP::SaveWeight(char* fname)
+{
+	int layer, snode, enode;
+	FILE *fp;
+
+	if ((fp = fopen(fname,"wt"))==NULL)
+		return false;
+
+	//입력노드 수 히든 레이어 수 출력노드 수
+	fprintf(fp, "%d %d %d\n", m_iNumlnNodes, m_iNumHiddenLayer, m_iNumOutNodes);
+	// node_layer0 node_layer1 node_layer2......
+	for (layer = 0; layer < m_iNumTotalLayer; layer++)
+	{
+		fprintf(fp, "%d ", m_NumNodes[layer]);
+	}
+	fprintf(fp, "\n");
+
+	//save weight
+	for (layer = 0; layer < m_iNumTotalLayer - 1; layer++)
+	{
+		for (enode = 1; enode <= m_NumNodes[layer + 1]; enode++)
+		{
+			for (snode = 0; snode <= m_NumNodes[layer]; snode++) //바이어스를 위해 0부터
+			{
+				fprintf(fp, "%.9lf ", m_Weight[layer][snode][enode]);
+			}
+		}
+		fprintf(fp, "\n");
+	}
+	fclose(fp);
+
+	return true;
+}
+
+
+bool CMLP::LoadWeight(char* fname)
+{
+	int layer, snode, enode;
+	FILE *fp;
+
+	if ((fp = fopen(fname, "rt")) == NULL)
+		return false;
+
+	//입력노드 수 히든 레이어 수 출력노드 수
+	fscanf(fp, "%d %d %d\n", &m_iNumlnNodes, &m_iNumHiddenLayer, &m_iNumOutNodes);
+	// node_layer0 node_layer1 node_layer2......
+	for (layer = 0; layer < m_iNumTotalLayer; layer++)
+	{
+		fscanf(fp, "%d ", &m_NumNodes[layer]);
+	}
+
+	//load weight
+	for (layer = 0; layer < m_iNumTotalLayer - 1; layer++)
+	{
+		for (enode = 1; enode <= m_NumNodes[layer + 1]; enode++)
+		{
+			for (snode = 0; snode <= m_NumNodes[layer]; snode++) //바이어스를 위해 0부터
+			{
+				fscanf(fp, "%lf ", &m_Weight[layer][snode][enode]);
+			}
+		}
+	}
+	fclose(fp);
+
+	return true;
+}

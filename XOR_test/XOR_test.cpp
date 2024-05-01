@@ -2,12 +2,15 @@
 #include "MLP.h"
 CMLP	MultiLayer;
 
-#define MAX_EPOCH 100000
+#define MAX_EPOCH 10000
 
 int main()
 {
 	int HiddenNode[2] = { 3,2 };
 	MultiLayer.Create(2, HiddenNode, 1, 2);
+
+	MultiLayer.LoadWeight((char*)"weight.txt");
+
 	int input[4][2] = { {0,0},{0,1},{1,0},{1,1} };
 	int danswer[4] = { 0,1,1,0 };
 	int n;
@@ -43,12 +46,12 @@ int main()
 				(MultiLayer.pCorrectOutValue[1] - MultiLayer.pOutValue[1]);
 		}
 		MSE /= 4; //평균값 계산
-		printf("Epoch%d(MSE) = %lf\n", epoch, MSE);
+		printf("Epoch %d(MSE) = %lf\n", epoch, MSE);
 		if (MSE < 0.0001)
 			break;
 	}
 	printf("********* 학습 종료 ***********\n");
-
+	MultiLayer.SaveWeight((char*)"weight.txt");
 	//입력과 현재의 출력값 계산
 	for (n = 0; n < 4; n++)
 	{

@@ -32,4 +32,6 @@ private:
 	double ActivationFunc(double weigthsum);
 public:
 	void BackPopagationLearning();
+	bool SaveWeight(char* fname);
+	bool LoadWeight(char* fname);
 };
